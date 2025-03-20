@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Product Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<!-- Product Showcase Section -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="PHONE.png" alt="Product Image" class="img-fluid">
+        </div>
+        <div class="col-md-6">
+            <h2>Product Name</h2>
+            <p>Description of the product. It's an amazing product with great features!</p>
+            <h3>₹49.99</h3>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" class="form-control" value="1" min="1" max="10">
+            <button id="addToCart" class="btn btn-primary mt-3">Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Section -->
+<div class="container mt-5">
+    <h3>Your Cart</h3>
+    <div id="cartItems" class="mb-3"></div>
+    <div id="cartSummary" class="border p-3">
+        <p>Total Items: <span id="totalItems">0</span></p>
+        <p>Total Price: ₹<span id="totalPrice">0.00</span></p>
+        <button class="btn btn-success">Checkout</button>
+    </div>
+</div>
+
+<script>
+    // JavaScript to manage the cart
+    let cart = [];
+
+    // Function to update the cart display
+    function updateCart() {
+        let cartItems = $("#cartItems");
+        let totalItems = 0;
+        let totalPrice = 0;
+
+        cartItems.empty();
+
+        cart.forEach(item => {
+            cartItems.append(`
+                <div class="cart-item">
+                    <p>${item.name} x ${item.quantity} - $${(item.price * item.quantity).toFixed(2)}</p>
+                    <button class="btn btn-danger btn-sm remove-item" data-name="${item.name}">Remove</button>
+                </div>
+            `);
+            totalItems += item.quantity;
+            totalPrice += item.price * item.quantity;
+        });
+
+        $("#totalItems").text(totalItems);
+        $("#totalPrice").text(totalPrice.toFixed(2));
+    }
+
+    // Add item to the cart
+    $("#addToCart").click(function() {
+        const productName = "Product Name";
+        const productPrice = 49.99;
+        const quantity = parseInt($("#quantity").val());
+
+        // Check if product already exists in the cart
+        let existingItem = cart.find(item => item.name === productName);
+
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.push({ name: productName, price: productPrice, quantity: quantity });
+        }
+
+        updateCart();
+    });
+
+    // Remove item from the cart
+    $(document).on("click", ".remove-item", function() {
+        const productName = $(this).data("name");
+
+        // Remove item from cart
+        cart = cart.filter(item => item.name !== productName);
+        updateCart();
+    });
+</script>
+
+</body>
+</html>
